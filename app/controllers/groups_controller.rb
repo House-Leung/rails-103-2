@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
   before_action :authenticate_user! , only: [:new, :create, :edit, :update, :destroy ]
-  before_action :find_group_and_check_permission, only: [:edit, :updata, :destroy]
+  before_action :find_group_and_check_permission, only: [:edit, :update, :destroy]
   def index
     @groups = Group.all
   end
@@ -24,6 +24,7 @@ class GroupsController < ApplicationController
     @group.user = current_user
 
     if @group.save
+      current_user.join!(@group)
       redirect_to groups_path
     else
       render :new
@@ -70,7 +71,7 @@ class GroupsController < ApplicationController
       flash[:warning] = "你不是本讨论版成员，怎么退出 XD"
     end
 
-    redirect_to group_path(@group)  
+    redirect_to group_path(@group)
 
   end
 
